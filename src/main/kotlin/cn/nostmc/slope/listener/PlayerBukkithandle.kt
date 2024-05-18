@@ -31,7 +31,7 @@ object PlayerBukkithandle : Listener {
     }
 
 
-    @EventHandler(ignoreCancelled = true, priority = org.bukkit.event.EventPriority.HIGHEST)
+    @EventHandler(priority = org.bukkit.event.EventPriority.HIGHEST)
     fun onDie(e: org.bukkit.event.entity.PlayerDeathEvent) {
         Bukkit.getScheduler().runTaskLater(cyanPlugin, Runnable {
             e.entity.spigot().respawn()
