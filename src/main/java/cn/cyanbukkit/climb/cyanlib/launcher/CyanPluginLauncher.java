@@ -44,7 +44,7 @@ public class CyanPluginLauncher extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        yaml = new File("plugins/ModuleGame-Bukkit/addon/"+ getDescription().getName() +"/config.yml");
+        yaml = new File("plugins/SiModuleGame/addon/"+ getDescription().getName() +"/config.yml");
         if (!yaml.exists()) {
             try {
                 if(yaml.getParentFile().mkdirs()) {
