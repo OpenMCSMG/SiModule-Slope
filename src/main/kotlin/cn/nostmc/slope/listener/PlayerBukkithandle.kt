@@ -65,6 +65,7 @@ object PlayerBukkithandle : Listener {
 
 
     fun Player.respawn() {
+        inventory.clear()
         this.health = this.getAttribute(org.bukkit.attribute.Attribute.GENERIC_MAX_HEALTH)!!.baseValue
         this.velocity = org.bukkit.util.Vector(0.0, 0.0, 0.0)
         val locList = mutableListOf<org.bukkit.Location>()
