@@ -1,5 +1,5 @@
 val group = "cn.cyanbukkit.climb"
-val version = "0.3"
+val version = "0.4"
 
 bukkit {
     name = rootProject.name

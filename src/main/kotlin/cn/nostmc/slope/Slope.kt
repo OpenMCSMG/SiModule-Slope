@@ -54,6 +54,17 @@ object Slope {
         BossBar.init(cyanPlugin)
         Scoreboard.init(cyanPlugin)
         status()
+        cyanPlugin.config.getStringList("SpawnLocation").forEach {
+            val split = it.split(",")
+            mapWorld.spawnLocation = Location(
+                mapWorld,
+                split[0].toDouble(),
+                split[1].toDouble(),
+                split[2].toDouble(),
+                split[3].toFloat(),
+                split[4].toFloat()
+            )
+        }
     }
 
     val entityList = listOf(

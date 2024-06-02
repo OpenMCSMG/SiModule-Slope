@@ -14,7 +14,6 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.scheduler.BukkitRunnable
 
 object PlayerBukkithandle : Listener {
@@ -31,11 +30,10 @@ object PlayerBukkithandle : Listener {
     }
 
 
-    @EventHandler(priority = org.bukkit.event.EventPriority.HIGHEST)
+    @EventHandler
     fun onDie(e: org.bukkit.event.entity.PlayerDeathEvent) {
         Bukkit.getScheduler().runTaskLater(cyanPlugin, Runnable {
             e.entity.spigot().respawn()
-            e.entity.inventory.clear()
             e.entity.respawn()
         }, 5L)
     }
@@ -44,7 +42,7 @@ object PlayerBukkithandle : Listener {
     @EventHandler
     fun onEntityDamageByEntity(event: EntityDamageByEntityEvent) {
         // 被揍的人直接弹飞 以视角的反方向
-        if (event.entity !is Player)  return
+        if (event.entity !is Player) return
         val entity = event.entity
         entity.velocity = entity.location.subtract(event.damager.location).toVector().normalize().multiply(
             cyanPlugin.config.getDouble("Velocity", 2.0)
@@ -66,18 +64,29 @@ object PlayerBukkithandle : Listener {
     }
 
 
-     fun Player.respawn() {
+    fun Player.respawn() {
+        this.health = this.getAttribute(org.bukkit.attribute.Attribute.GENERIC_MAX_HEALTH)!!.baseValue
+        this.velocity = org.bukkit.util.Vector(0.0, 0.0, 0.0)
         val locList = mutableListOf<org.bukkit.Location>()
         cyanPlugin.config.getStringList("SpawnLocation").forEach {
             val split = it.split(",")
-            locList.add(org.bukkit.Location(Slope.mapWorld, split[0].toDouble(), split[1].toDouble(), split[2].toDouble(), split[3].toFloat(), split[4].toFloat()))
+            locList.add(
+                org.bukkit.Location(
+                    Slope.mapWorld,
+                    split[0].toDouble(),
+                    split[1].toDouble(),
+                    split[2].toDouble(),
+                    split[3].toFloat(),
+                    split[4].toFloat()
+                )
+            )
         }
         val loc = locList.random()
         this.teleport(loc)
         gameMode = org.bukkit.GameMode.ADVENTURE
     }
 
-    fun Player.nextTemplete() {
+    fun Player.nextTemplate() {
         val t = cyanPlugin.config.getString("GameEnd")!!.split(",")
         val loc = org.bukkit.Location(Slope.mapWorld, t[0].toDouble(), t[1].toDouble(), t[2].toDouble())
         this.teleport(loc)
@@ -103,9 +112,9 @@ object PlayerBukkithandle : Listener {
     }
 
 
-//  想你了骚操作 https://github.com/SakuraKoi/BridgingAnalyzer
+    //  想你了骚操作 https://github.com/SakuraKoi/BridgingAnalyzer
     @EventHandler
-    fun onmove(e: org.bukkit.event.player.PlayerMoveEvent) {
+    fun onMove(e: org.bukkit.event.player.PlayerMoveEvent) {
         val player = e.player
         val y = e.to!!.y
         val bar = bar[player]!!
@@ -114,19 +123,15 @@ object PlayerBukkithandle : Listener {
         bar.percent = rawPercent.coerceIn(0.0f, 1.0f)
         bar.text = "§6进展高度: $y / $maxHight "
         // 如果y轴小于-32直接传送到出生点
-        if (y < -32) {
+        if (y < -48) {
             player.respawn()
         }
         //脚下的方块是绿宝石方块就加血
-        if (player.location.subtract(0.0,1.0,0.0,).block.type == org.bukkit.Material.EMERALD_BLOCK) {
+        if (player.location.subtract(0.0, 1.0, 0.0).block.type == org.bukkit.Material.EMERALD_BLOCK) {
             player.health = player.getAttribute(org.bukkit.attribute.Attribute.GENERIC_MAX_HEALTH)!!.baseValue
             player.sendTitle("§a加血血量加满", "", 10, 20, 10)
         }
     }
-
-
-
-
 
 
 }
