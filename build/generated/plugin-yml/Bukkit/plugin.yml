@@ -1,0 +1,13 @@
+name: SiModule-Slope
+version: unspecified
+main: cn.cyanbukkit.climb.cyanlib.launcher.CyanPluginLauncher
+description: An example plugin for CyanBukkit
+authors:
+  - CyanBukkit
+  - NostMC
+website: https://cyanbukkit.cn
+depend:
+  - Citizens
+api-version: "1.13"
+loadbefore:
+  - ModuleGame-Bukkit
